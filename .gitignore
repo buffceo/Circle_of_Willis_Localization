@@ -3,4 +3,4 @@ __pycache__/
 venv/
 *.nii.gz
 examples/
-`n.idea/git add .gitignore
+.idea/
