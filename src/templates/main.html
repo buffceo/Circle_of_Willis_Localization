@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoW Localizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@niivue/niivue@0.44.0/dist/niivue.umd.js"></script>
+  
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo">CoW<span>.</span>Localizer</div>
+    <div class="sep"></div>
+    <div class="status-dot" id="status-dot"></div>
+    <div class="status-label" id="status-label">checking…</div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <!-- ── Sidebar ── -->
+    <aside>
+
+      <!-- Upload -->
+      <div class="sidebar-section">
+        <div class="section-label">Input Volume</div>
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept=".nii,.nii.gz" />
+          <div class="drop-icon">🧠</div>
+          <div class="drop-text">
+            <strong>Drop NIfTI here</strong>
+            .nii / .nii.gz
+          </div>
+        </div>
+        <div id="file-name"></div>
+        <button class="btn-run" id="run-btn" disabled>▶ RUN INFERENCE</button>
+        <div class="progress-wrap" id="progress-wrap">
+          <div class="progress-bar indeterminate" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- Metrics (hidden until result) -->
+      <div class="sidebar-section" id="metrics-section" style="display:none">
+        <div class="section-label">Results</div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-val" id="m-start">—</div>
+            <div class="metric-key">Start slice</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-end">—</div>
+            <div class="metric-key">End slice</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-nslices">—</div>
+            <div class="metric-key">Crop slices</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-pos">—</div>
+            <div class="metric-key">Pos. slices</div>
+          </div>
+          <div class="metric wide">
+            <div class="metric-val" id="m-thresh">—</div>
+            <div class="metric-key">Threshold used</div>
+          </div>
+        </div>
+        <a href="#" class="btn-dl" id="dl-btn" style="display:none">⬇ Download Crop</a>
+      </div>
+
+      <!-- Probability chart -->
+      <div class="sidebar-section" id="chart-section" style="display:none">
+        <div class="section-label">Slice Probabilities</div>
+        <div class="prob-chart-wrap">
+          <canvas id="prob-canvas" height="120"></canvas>
+        </div>
+      </div>
+
+      <!-- View controls -->
+      <div class="sidebar-section">
+        <div class="section-label">View Plane</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-slice="axial">AXI</button>
+          <button class="toggle-btn" data-slice="coronal">COR</button>
+          <button class="toggle-btn" data-slice="sagittal">SAG</button>
+          <button class="toggle-btn" data-slice="multiplanar">MPR</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── Viewer ── -->
+    <div class="viewer-area">
+      <div class="viewer-toolbar">
+        <span class="viewer-label orig">Original</span>
+        <span class="viewer-label crop">Cropped</span>
+        <span class="viewer-sep"></span>
+        <select class="colormap-select" id="colormap-sel">
+          <option value="gray">Gray</option>
+          <option value="hot">Hot</option>
+          <option value="cool">Cool</option>
+          <option value="winter">Winter</option>
+          <option value="plasma">Plasma</option>
+          <option value="viridis">Viridis</option>
+        </select>
+      </div>
+
+      <div class="canvases">
+        <!-- Original -->
+        <div class="canvas-wrap" id="wrap-orig">
+          <div class="canvas-tag orig">ORIGINAL</div>
+          <canvas id="gl-orig"></canvas>
+          <div class="empty-state" id="empty-orig">
+            <div class="empty-glyph">📂</div>
+            <div class="empty-text">Upload a volume</div>
+          </div>
+        </div>
+        <!-- Cropped -->
+        <div class="canvas-wrap" id="wrap-crop">
+          <div class="canvas-tag crop">CROPPED</div>
+          <canvas id="gl-crop"></canvas>
+          <div class="empty-state" id="empty-crop">
+            <div class="empty-glyph">✂️</div>
+            <div class="empty-text">Run inference first</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="static/main.js"></script>
+</body>
+</html>

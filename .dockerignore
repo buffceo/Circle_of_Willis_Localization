@@ -1,0 +1,9 @@
+example/
+data/
+__pycache__/
+*.pt
+*.nii
+*.nii.gz
+.git
+.gitignore
+venv/
